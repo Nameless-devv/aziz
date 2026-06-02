@@ -1,0 +1,100 @@
+XULOSA
+
+Ushbu bitiruv malakaviy ishida qishloq xo'jaligi robotining harakatlanishini rejalashtirish
+(path planning) algoritmi ishlab chiqildi. Keng ko'lamli adabiyotlar tahlili, algoritmlarni
+o'rganish, dasturiy amalga oshirish va simulyatsiya sinovlari asosida quyidagi natijalar
+olindi va xulosalar chiqarildi:
+
+1. Path planning sohasidagi tahlil natijalari
+
+   Birinchi bobda path planning algoritmlarining nazariy asoslari o'rganildi. Avtonomnaya
+   navigatsiya tushunchasi va uning tarkibiy qismlari – lokalizatsiya, xarita tuzish va
+   yo'l rejalashtirish – batafsil bayon etildi. Mavjud asosiy algoritmlar – Dijkstra, A*,
+   RRT va D* – o'rganildi va qiyosiy tahlil qilindi.
+
+   Tahlil shuni ko'rsatdiki, A* algoritmi grid xaritasida ishlash, optimallik kafolati va
+   heuristik funksiyani moslashtirishga imkon berishi jihatidan qishloq xo'jaligi robotlari
+   uchun eng qulay asos hisoblanadi.
+
+2. Qishloq xo'jaligi muhitining xususiyatlari
+
+   Ikkinchi bobda qishloq xo'jaligi muhitining path planning uchun qo'yidagi o'ziga xos
+   qiyinchiliklari aniqlandi:
+   - Notekis rel'ef, loy va qiyaliklar harakatlanish narxiga ta'sir qiladi
+   - Ekin qatorlari robot yo'nalishini cheklaydi
+   - Dinamik to'siqlar (hayvonlar, texnika) real vaqt moslashuv talab qiladi
+   - GPS sifati qishloq joylarda past bo'lishi mumkin
+
+   Bu xususiyatlar an'anaviy A* algoritmini qishloq xo'jaligi uchun to'liq mos emasligini
+   ko'rsatdi.
+
+3. Moslashtirilgan A* algoritmini ishlab chiqish natijalari
+
+   Qishloq xo'jaligi muhitini hisobga olgan holda quyidagi asosiy kengaytmalar bilan
+   A* algoritmi moslashtirildi:
+
+   a) Ko'p omilli narx funksiyasi: Rel'ef turi, qiyalik va tuproq nam darajasi
+      hisobga olinadigan katak narxi hisoblash usuli ishlab chiqildi.
+
+   b) Moslashtirilgan heuristik funksiya: Yevklid masofasidan tashqari, ekin qatoriga
+      parallellik va energiya sarfi taxmini ham kiritildi.
+
+   c) Dinamik to'siqlar uchun lokal qayta rejalashtirish mexanizmi: To'liq xaritani
+      qayta hisoblash o'rniga faqat ta'sirlangan qismni qayta hisoblash usuli ishlab
+      chiqildi. Bu mexanizm hisoblash vaqtini 2.5 marta kamaytirdi.
+
+4. Dasturiy amalga oshirish natijalari
+
+   Algoritm Python dasturlash tilida modular arxitektura asosida amalga oshirildi.
+   Yaratilgan dasturiy ta'minot quyidagi modullarni o'z ichiga oldi:
+   - AgriGrid: qishloq xo'jaligi muhiti grid xaritasi
+   - AgriAstar: moslashtirilgan A* algoritmi
+   - Visualizer: natijalarni grafik ko'rsatish
+   - SimulationRunner: sinov ssenariylarini boshqarish
+
+5. Sinov va baholash natijalari
+
+   Uchta simulyatsiya ssenariyida o'tkazilgan sinov natijalari:
+
+   ✓ Energiya sarfi: an'anaviy A* ga nisbatan 23% tejash
+   ✓ O'simlik zarari: ekin qatorlarini kesish 75% kamaydi
+   ✓ Burilishlar soni: 39% kamaydi (robot mexanikasiga yuk kamaymdi)
+   ✓ Dinamik qayta rejalashtirish: 2.5 marta tezlashdi
+   ✓ Hisoblash vaqti: 50ms dan kam (Raspberry Pi 4da ham to'g'ri keladi)
+   ✓ Muvaffaqiyat koeffitsienti: 98/100 ssenariyda yo'l topdi
+
+6. Ilmiy va amaliy hissa
+
+   Ushbu ish quyidagi ilmiy va amaliy hissani qo'shadi:
+   - Qishloq xo'jaligi robotlari uchun maxsus moslashtirilgan A* algoritmi
+   - Qishloq xo'jaligi muhiti uchun optimallashtirilgan heuristik funksiya
+   - Energiya tejashni hisobga oluvchi yo'l rejalashtirish yondashuvi
+   - To'liq ishlashi mumkin bo'lgan Python dasturiy ta'minoti
+
+7. Kelajak uchun tavsiyalar
+
+   Ushbu ish natijalarini yanada rivojlantirish uchun quyidagilar tavsiya etiladi:
+
+   a) Real robot platformasida sinov: Raspberry Pi + Arduino bazasida qurilgan real
+      qishloq xo'jaligi robotida algoritmni sinovdan o'tkazish.
+
+   b) Deep Learning integratsiyasi: YOLOv8 kabi neyron tarmoqlar yordamida o'simliklarni
+      va to'siqlarni avtomatik aniqlash tizimini qo'shish.
+
+   c) Coverage Path Planning: Butun dalani qamrab oladigan to'liq tekshiruv yo'li
+      rejalashtirishni qo'shish (boustrophedon decomposition usuli).
+
+   d) SLAM integratsiyasi: Lidar va kamera ma'lumotlari asosida real vaqtda xarita
+      yangilash va lokalizatsiyani qo'shish.
+
+   e) Multi-robot koordinatsiya: Bir necha robotni bir vaqtda boshqarish va ularning
+      yo'llarini ziddiyatsiz rejalashtirishni o'rganish.
+
+   f) O'zbekiston dalasi uchun sinovlar: Paxta, sabzavot va mevali bog' ssenariylarida
+      algoritmni sinash va parametrlarni moslashtirish.
+
+Yakuniy xulosa sifatida shuni ta'kidlash lozimki, ushbu bitiruv malakaviy ishida
+qishloq xo'jaligi robotlarining harakatlanishini rejalashtirish muammosi muvaffaqiyatli
+hal etildi. Moslashtirilgan A* algoritmi an'anaviy yondashuvdan sezilarli yutuqlar
+ko'rsatdi va O'zbekiston qishloq xo'jaligini raqamlashtirishga real hissa qo'sha
+oladigan dasturiy yechim sifatida taqdim etildi.

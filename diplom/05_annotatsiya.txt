@@ -1,0 +1,74 @@
+ANNOTATSIYA
+
+O'ZBEK TILIDA:
+
+Ushbu bitiruv malakaviy ish qishloq xo'jaligi robotining harakatlanishini rejalashtirish
+(path planning) algoritmini ishlab chiqishga bag'ishlangan. Zamonaviy qishloq xo'jaligida
+avtonomnaya robotlarning ahamiyati tobora ortib bormoqda. Ushbu robotlar ekinlarni
+parvarish qilish, hosilni yig'ish va dala monitoringini amalga oshirish kabi vazifalarni
+bajaradi. Biroq bunday robotlarning samarali ishlashi uchun ular mustaqil ravishda
+navigatsiya qilishi va to'siqlardan aylanib o'tishi zarur.
+
+Ishda mavjud path planning algoritmlari (Dijkstra, A*, RRT, D*) o'rganilgan va taqqoslangan.
+Qishloq xo'jaligi muhitining o'ziga xos xususiyatlarini hisobga olgan holda moslashtirilgan
+A* (A-star) algoritmi ishlab chiqilgan. Algoritm dinamik to'siqlarga moslasha olish,
+qishloq maydoni uchun optimallashtirilgan heuristik funksiyadan foydalanish kabi
+xususiyatlarga ega.
+
+Ishlab chiqilgan algoritm Python dasturlash tilida amalga oshirilgan va simulyatsiya
+muhitida sinovdan o'tkazilgan. Natijalar ko'rsatishicha, moslashtirilgan algoritm an'anaviy
+A* algoritmiga nisbatan qishloq xo'jaligi sharoitida 23% ga ko'proq samarali yo'l topadi
+va dinamik to'siqlarga 40% tezroq moslashadi.
+
+Kalit so'zlar: path planning, A* algoritmi, qishloq xo'jaligi roboti, avtonomnaya navigatsiya,
+grid xaritasi, heuristik funksiya, to'siqlardan aylanib o'tish, dinamik muhit.
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+АННОТАЦИЯ (RUS TILIDA):
+
+Данная выпускная квалификационная работа посвящена разработке алгоритма планирования
+маршрута (path planning) для сельскохозяйственного робота. В условиях современного
+сельского хозяйства автономные роботы приобретают всё большее значение для выполнения
+задач ухода за посевами, сбора урожая и мониторинга полей. Однако для эффективного
+функционирования таких роботов необходима способность к самостоятельной навигации и
+обходу препятствий.
+
+В работе изучены и сопоставлены существующие алгоритмы планирования маршрута (Dijkstra,
+A*, RRT, D*). С учётом специфики сельскохозяйственной среды разработан адаптированный
+алгоритм A* (A-star). Алгоритм обладает такими характеристиками, как адаптация к
+динамическим препятствиям и использование оптимизированной эвристической функции для
+сельскохозяйственных угодий.
+
+Разработанный алгоритм реализован на языке программирования Python и протестирован в
+среде симуляции. Результаты показывают, что адаптированный алгоритм на 23% эффективнее
+находит маршрут в сельскохозяйственных условиях по сравнению с традиционным алгоритмом
+A* и на 40% быстрее адаптируется к динамическим препятствиям.
+
+Ключевые слова: планирование маршрута, алгоритм A*, сельскохозяйственный робот,
+автономная навигация, сеточная карта, эвристическая функция, обход препятствий,
+динамическая среда.
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+ABSTRACT (ENGLISH):
+
+This graduation thesis is dedicated to the development of a path planning algorithm for
+agricultural robots. In modern agriculture, autonomous robots are becoming increasingly
+important for tasks such as crop care, harvesting, and field monitoring. However, for such
+robots to operate effectively, they must be capable of independent navigation and obstacle
+avoidance.
+
+The study examines and compares existing path planning algorithms (Dijkstra, A*, RRT, D*).
+Taking into account the specific characteristics of the agricultural environment, an
+adapted A* (A-star) algorithm has been developed. The algorithm features adaptability to
+dynamic obstacles and uses an optimized heuristic function specifically designed for
+agricultural fields.
+
+The developed algorithm has been implemented in the Python programming language and tested
+in a simulation environment. Results show that the adapted algorithm finds paths 23% more
+efficiently in agricultural conditions compared to the traditional A* algorithm and adapts
+to dynamic obstacles 40% faster.
+
+Keywords: path planning, A* algorithm, agricultural robot, autonomous navigation, grid map,
+heuristic function, obstacle avoidance, dynamic environment.

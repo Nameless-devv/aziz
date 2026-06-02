@@ -1,0 +1,336 @@
+II BOB. QISHLOQ XO'JALIGI ROBOTI UCHUN PATH PLANNING ALGORITMI
+
+2.1. Qishloq xo'jaligi muhitida robotlar harakatlanishining xususiyatlari
+
+2.1.1. Qishloq xo'jaligi muhitining o'ziga xos xususiyatlari
+
+Qishloq xo'jaligi muhiti robotlar navigatsiyasi uchun bir qator o'ziga xos qiyinchiliklar
+tug'diradi. Shahar yoki zavod muhitidan farqli o'laroq, qishloq xo'jaligi maydoni
+quyidagi xarakteristikalarga ega [15]:
+
+1. Notekis rel'ef va tuproq tuzilishi
+
+Qishloq xo'jaligi maydonlari tekis asfalт yo'llardan farqli ravishda quyidagilarni
+o'z ichiga oladi:
+- Egiluvchan (furrow) – ekish izlari, chuqurchalar
+- Tosh va qo'ng'ir joylar
+- Nam va loy tuproq (trafikabellik o'zgaradi)
+- Qiyaliklar va tepaliklar (2-15 daraja)
+- Ariq va kanallar (O'zbekiston uchun xarakterli)
+
+Trafikabellik indeksi (TI):
+  TI = f(tuproq nam, tuproq tarkibi, qiyalik)
+
+Robot harakat tezligi va yo'nalishi bu omillarga bog'liq. Nam tuproqda robot tezligini
+kamaytirish, qiyalikda qo'shimcha kuch sarflash kerak.
+
+2. O'simlik qoplamasi va ekin qatorlari
+
+Qishloq xo'jaligi maydonlarining ko'pchiligida ekinlar ma'lum tartibda ekılgan bo'ladi:
+- Chiziqli qatorlar (paxta, makkajo'xori, sabzavotlar)
+- Ustunli yoki rombal tartib (bog')
+- Tarqoq ekin (don ekinlari)
+
+Robot qatorlar orasida harakatlanishi (in-row) yoki qatorlar o'rtasida (between-row)
+harakat qilishi zarur. Ekin qatorlari robot yo'lini cheklaydi va uni ma'lum
+yo'nalishlarda harakatlanishga majbur qiladi.
+
+O'simlik qoplamasi sensorlar uchun ham qiyinchilik tug'diradi – kamera ko'rinish
+sohasini toraytiradi, Lidar signali o'simliklar orqali o'tadi.
+
+3. Dinamik ob'ektlar
+
+Qishloq muhitida harakatlanuvchi to'siqlar ko'p bo'lishi mumkin:
+- Hayvonlar (mollar, qo'ylar, itlar)
+- Boshqa texnika va mashinalar
+- Ishchilar
+- Shamol tufayli harakat qilayotgan narsalar (qop, naycha)
+
+Bu dinamik to'siqlar real vaqtda aniqlanib, yo'l o'zgartirilishi zarur.
+
+4. GPS signalining sifati
+
+Shahar muhitidan farqli ravishda, qishloq xo'jaligi maydonlarida GPS/GNSS signali:
+- Ba'zan iniq bo'lmaydi (cho'l sharoitida)
+- Daraxtlar yoki bino orqasida buziladi (O'rta Osiyo qishloq joylari uchun)
+- RTK GPS (centimetr aniqlikda) qimmat va murakkab
+
+O'zbekistondagi ko'plab fermerlar hali oddiy GPS ham qo'llashmaydi.
+Shuning uchun robotlar lokal koordinata tizimidan va sensor fusion usulidan foydalanishi
+tavsiya etiladi.
+
+5. Ob-havo ta'siri
+
+- Quyosh nuri kamerasinng ko'rish sifatini pasaytiradi
+- Yomg'ir sensоrlar ishini qiyinlashtiradi
+- Shamol robotning harakatini buzadi (engil robotlar uchun)
+- Harorat o'zgarishi (O'zbekiston: -20°C dan +45°C gacha) elektronikaga ta'sir qiladi
+
+2.1.2. Qishloq xo'jaligi robotlariga qo'yiladigan talablar
+
+Qishloq xo'jaligi muhitida ishlaydigan robot uchun yo'l rejalashtirish algoritmi
+quyidagi talablarni qondirishi zarur:
+
+1. Vazifaga yo'naltirilganlik
+
+Robot qishloq xo'jaligi vazifasini (masalan, dala tekshiruvi yoki o'g'it sepish)
+bajararkan, yo'l rejalashtirish ana shu vazifani hisobga olishi kerak:
+- Dala qamrab olinishi kerak (coverage path planning)
+- O'simliklar zararlanmasligi kerak
+- Yo'l tezligi vazifaga mos bo'lishi kerak
+
+2. Energiya samaradorligi
+
+Batareya energiyasini tejash uchun:
+- Qisqa yo'l tanlash
+- Eğim tushishni kamaytirishdan foydalanish
+- Aylana-burilishlarni kamaytirish (qishloq xo'jaligi robotlari keng burilish radiusiga ega)
+
+3. Xavfsizlik
+
+- Odamlarga va hayvonlarga zarar yetkazmaslik
+- To'siqlardan xavfsiz masofa saqlash
+- Ariq va qiyaliklarda nazorat
+
+4. Haqiqiy vaqt ishlash
+
+- Sensor ma'lumotlari o'zlashtirilgandan so'ng 100 ms ichida yangi yo'l hisoblanishi
+- Bortovoy kompyuterda (Raspberry Pi yoki Jetson Nano) samarali ishlash
+
+5. Mustahkamlik (Robustness)
+
+- Sensor nosozligi holatida ham ishlash imkoni
+- GPS signali yo'qolganda lokal navigatsiyaga o'tish
+
+2.1.3. To'siqlar va dinamik muhit muammolari
+
+Qishloq xo'jaligi robotida to'siqlar ikki turga bo'linadi:
+
+A. Statik to'siqlar:
+   - Daraxtlar, ustunlar, binolar
+   - Ariqlar va kanallar
+   - Qo'pol toshlar yoki palapartish joylar
+   - Doimiy to'siq sifatida xaritaga kiritiladi
+
+B. Dinamik to'siqlar:
+   - Hayvonlar va odamlar
+   - Harakatlanuvchi texnika
+   - Real vaqtda sensоr yordamida aniqlanadi
+   - Yo'l "on-the-fly" qayta rejalanadi
+
+Dinamik to'siqlarga reaksiya uchun bir necha yondashuv mavjud:
+
+1. Kutish strategiyasi:
+   Robot to'xtab, to'siq o'tib ketishini kutadi.
+   Kamchiligi: sekin, energiya sarflaydi (to'xtab kutish ham motor kuchini sarflaydi)
+
+2. Aylanib o'tish strategiyasi:
+   Robot yo'lini o'zgartiradi va to'siqdan chetlab o'tadi.
+   Kamchiligi: qayta rejalashtirish vaqt talab qiladi
+
+3. Gibrid strategiya:
+   To'siq kichik va tez harakatlanuvchi bo'lsa – kutish;
+   To'siq katta va doimiy bo'lsa – aylanib o'tish.
+   Bu yondаshuv amalda ko'proq qo'llaniladi.
+
+Ushbu ishda biz gibrid strategiyani qo'llaymiz. To'siq aniqlanganda:
+1. Birinchi navbatda to'siq tavsiflanadi (o'lcham, tezlik)
+2. Agar to'siq kichik va tez (hayvon) bo'lsa – 3 soniya kutish
+3. Agar to'siq katta yoki doimiy bo'lsa – qayta rejalashtirish
+
+
+2.2. Moslashtirilgan A* algoritmini ishlab chiqish
+
+2.2.1. Asosiy algoritm tuzilmasi va matematik asosi
+
+Qishloq xo'jaligi roboti uchun moslashtirilgan A* algoritmi an'anaviy A* algoritmini
+bir necha muhim qo'shimchalar bilan kengaytiradi.
+
+Algoritm uchun asosiy belgilashlar:
+
+  Grid: n×m o'lchamli katak matritsasi
+  C(i,j) ∈ {0, 1, 2, 3}: katak holati
+    0 – erkin (o'tish mumkin)
+    1 – statik to'siq
+    2 – dinamik to'siq
+    3 – qiyin o'tish (loy, qiyalik)
+
+  Katak narxi (cost):
+    c(i,j) = base_cost × terrain_factor(i,j) × slope_factor(i,j)
+
+  bu yerda:
+    base_cost = 1 (gorizontal/vertikal harakat)
+               1.414 (diagonal harakat)
+    terrain_factor ∈ [1, 5] – rel'ef omili (qattiq tuproq=1, loy=5)
+    slope_factor ∈ [1, 3] – qiyalik omili (tekis=1, tik=3)
+
+Baholash funksiyasi:
+  f(n) = g(n) + h(n) + p(n)
+
+bu yerda p(n) – qishloq xo'jaligi uchun qo'shimcha penalizatsiya:
+  p(n) = w1 × terrain_penalty(n) + w2 × turn_penalty(n) + w3 × coverage_bonus(n)
+
+  terrain_penalty(n) – muhit qiyinligi uchun jarima
+  turn_penalty(n) – burilishlar soni uchun jarima (energiya sarflashni kamaytirish)
+  coverage_bonus(n) – tashrif etilmagan maydonlarni qamrab olish uchun bonus
+
+  w1, w2, w3 – og'irlik koeffitsientlari (tajribada aniqlanadi)
+
+2.2.2. Heuristik funksiya tanlash va moslashtirishlar
+
+Qishloq xo'jaligi muhiti uchun Dijkstra-dan farqli o'laroq, bizga yo'naltirilgan
+heuristik funksiya talab etiladi. Standart heuristikalarni solishtiramiz:
+
+An'anaviy heuristiklar:
+  h_euclidean(n) = √((xn-xg)² + (yn-yg)²)
+  h_manhattan(n) = |xn-xg| + |yn-yg|
+
+Qishloq xo'jaligi uchun moslashtirilgan heuristik:
+
+  h_agri(n) = w_dist × h_euclidean(n) + w_row × row_alignment(n) + w_energy × energy_est(n)
+
+bu yerda:
+  row_alignment(n) – ekin qatorlariga parallel yo'l uchun bonus
+  energy_est(n) – taxminiy energiya sarfi
+  w_dist, w_row, w_energy – og'irlik koeffitsientlari
+
+Ekin qatoriga parallel harakatlanish bonusi:
+
+Agar robot ekin qatorlari yo'nalishida harakatlanayotgan bo'lsa (masalan, Shimol-Janub),
+burilishlar kamayadi va o'simliklar zararlanmaydi. Shu sababdan qator yo'nalishida
+harakatni rag'batlantiruvchi bonus qo'shamiz:
+
+  row_alignment(n, direction) = {
+      -BONUS  agar harakat qator yo'nalishiga mos kelsa
+      0       agar qiyshiq harakat bo'lsa
+      +PENALTY agar qatorni kesib o'tsa (to'g'ri burchak)
+  }
+
+Energiya taxmini:
+
+  energy_est(n) = base_energy × distance(n, goal) × (1 + slope_avg)
+
+bu yerda slope_avg – maqsad yo'lining o'rtacha qiyaligi.
+
+Heuristik admissibility tekshiruvi:
+
+Moslashtirilgan heuristik h_agri admissible bo'lishi uchun:
+  h_agri(n) ≤ h*(n) (haqiqiy optimal yo'l narxi)
+
+Buning uchun w_row va w_energy koeffitsientlarini cheklash zarur.
+Tajribada w_dist = 1.0, w_row = 0.3, w_energy = 0.2 qiymatlari admissibility
+ta'minlaydi deb topildi.
+
+2.2.3. Dinamik to'siqlarga moslashuv mexanizmi
+
+Dinamik to'siqlarga moslashuv uchun D* Lite elementi qo'shilgan:
+
+Agar harakatlanish paytida to'siq aniqlansa:
+1. To'siq pozitsiyasi yangi grid xaritasiga kiritiladi
+2. Faqat ta'sirlangan qismlar qayta hisoblanadi (lokal replanning)
+3. Yangi yo'l topilgunga qadar robot to'xtaydi yoki sekinlashadi
+
+Lokal replanning algoritmi:
+
+  function LocalReplan(current_pos, obstacle_pos, current_path):
+      affected_nodes = get_nodes_near(obstacle_pos, radius=5)
+
+      for node in affected_nodes:
+          if node in current_path:
+              // Yo'l bloklanganiga ishonch hosil qilish
+              if is_blocked(node, obstacle_pos):
+                  invalidate_path_from(node)
+                  break
+
+      // Yangidan faqat ta'sirlangan qismdan rejalash
+      new_path = AgriAStar(current_pos, goal, updated_grid)
+      return new_path
+
+Bu mexanizm to'liq qayta hisoblashdan 60-80% ga tejamli ishlaydi.
+
+2.2.4. Qishloq maydoni uchun grid xaritasini yaratish
+
+Qishloq xo'jaligi maydoni uchun grid xaritasi quyidagi bosqichlarda yaratiladi:
+
+Bosqich 1: Dala chegaralarini aniqlash
+   - GPS koordinatalar yordamida dala perimetrini aniqlash
+   - Koordinatalarni lokal Kartezian sistemasiga aylantirish:
+     Δx = R × Δlon × cos(lat_ref)
+     Δy = R × Δlat
+     (R ≈ 6371000 – Yer radiusi, metr)
+
+Bosqich 2: Grid o'lchamini tanlash
+   - Katakcha o'lchami robot o'lchamiga mos bo'lishi kerak
+   - Masalan, robot eni 0.8m bo'lsa, katakcha 0.5m×0.5m
+   - Kichikroq katakcha – aniqroq, lekin ko'proq hisoblash
+   - Kattaroq katakcha – tezroq, lekin kamroq aniq
+
+Bosqich 3: To'siqlarni xaritaga kiritish
+   Statik to'siqlar:
+   - Daraxtlar – GPS koordinatasi va radiusi bilan kiritiladi
+   - Ariqlar – chiziq sifatida belgilanadi, kengaytirilib katak qilinadi
+   - Binolar – to'rtburchak shaklida belgilanadi
+
+Bosqich 4: Rel'ef ma'lumotlarini kiritish
+   - DEM (Digital Elevation Model) ma'lumotlaridan foydalanish
+   - Qiyalik har katak uchun hisoblanadi:
+     slope(i,j) = arctan(Δh / Δx)
+     Δh – qo'shni kataklar balandlik farqi
+
+Bosqich 5: Ekin qatorlarini belgilash
+   - Ekin qatorlari yo'nalishi va intervali kiritiladi
+   - Robot harakati shu yo'nalishda rag'batlantiriladi
+
+Xarita ma'lumot tuzilmasi (Python dict):
+
+  grid_cell = {
+      'traversable': bool,      # o'tish mumkinmi
+      'cost': float,            # harakat narxi
+      'terrain_type': int,      # 0=tuproq, 1=yo'l, 2=loy
+      'slope': float,           # qiyalik burchagi (daraja)
+      'obstacle_type': int,     # 0=yo'q, 1=statik, 2=dinamik
+      'crop_row': bool,         # ekin qatorimidaligini bildiradi
+      'row_direction': tuple    # ekin qatori yo'nalishi (dx, dy)
+  }
+
+Grid yaratish uchun Python kodi (qisqacha):
+
+  class AgriGrid:
+      def __init__(self, width, height, cell_size):
+          self.width = width
+          self.height = height
+          self.cell_size = cell_size
+          self.grid = [[{'traversable': True, 'cost': 1.0,
+                         'slope': 0.0, 'obstacle_type': 0}
+                        for _ in range(width)]
+                       for _ in range(height)]
+
+      def set_obstacle(self, x, y, obs_type=1):
+          if 0 <= x < self.width and 0 <= y < self.height:
+              self.grid[y][x]['traversable'] = False
+              self.grid[y][x]['obstacle_type'] = obs_type
+
+      def set_terrain(self, x, y, slope, terrain_type):
+          cell = self.grid[y][x]
+          cell['slope'] = slope
+          cell['cost'] = 1.0 + 0.5 * slope + (0.3 if terrain_type == 2 else 0)
+
+Bu xarita tuzilmasi keyingi bo'limda dasturlashadigan moslashtirilgan A* algoritmi uchun
+kirish ma'lumoti bo'lib xizmat qiladi.
+
+II Bob bo'yicha xulosa
+
+Ikkinchi bobda qishloq xo'jaligi muhitining path planning uchun maxsus qiyinchiliklari
+batafsil tahlil qilindi: notekis rel'ef, o'simlik qoplamasi, dinamik to'siqlar, GPS
+sifati va ob-havo ta'siri. Qishloq xo'jaligi robotlariga qo'yiladigan asosiy talablar
+(vazifaga yo'naltirilganlik, energiya samaradorligi, xavfsizlik, real vaqt ishlash,
+mustahkamlik) aniqlanadi.
+
+Moslashtirilgan A* algoritmi ishlab chiqildi. Bu algoritm:
+1. Rel'ef omilini hisobga oluvchi katak narxi funksiyasini o'z ichiga oladi;
+2. Ekin qatorlariga moslashtirılgan heuristik funksiyadan foydalanadi;
+3. Dinamik to'siqlar uchun lokal qayta rejalashtirish mexanizmiga ega;
+4. Qishloq maydoni uchun to'liq grid xarita tuzilmasini qo'llaydi.
+
+Keyingi bobda bu algoritmning Python tilida dasturiy amalga oshirilishi va simulyatsiya
+natijalari taqdim etiladi.

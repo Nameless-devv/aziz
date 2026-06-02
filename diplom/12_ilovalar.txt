@@ -1,0 +1,314 @@
+ILOVALAR
+
+ILOVA A – To'liq dastur kodi
+
+A.1. agri_grid.py – To'liq versiya
+
+import numpy as np
+import copy
+
+class AgriGrid:
+    """Qishloq xo'jaligi muhiti uchun grid xaritasi"""
+
+    TERRAIN_NORMAL = 0
+    TERRAIN_ROAD   = 1
+    TERRAIN_MUD    = 2
+    TERRAIN_CROP   = 3
+
+    OBSTACLE_NONE    = 0
+    OBSTACLE_STATIC  = 1
+    OBSTACLE_DYNAMIC = 2
+
+    def __init__(self, width, height, cell_size=0.5):
+        self.width = width
+        self.height = height
+        self.cell_size = cell_size
+
+        self.grid = [[{
+            'traversable': True,
+            'cost': 1.0,
+            'terrain': self.TERRAIN_NORMAL,
+            'slope': 0.0,
+            'obstacle': self.OBSTACLE_NONE,
+            'crop_row': False,
+            'row_dir': (1, 0)
+        } for _ in range(width)] for _ in range(height)]
+
+    def set_obstacle(self, x, y, obs_type=1):
+        if self._in_bounds(x, y):
+            self.grid[y][x]['traversable'] = False
+            self.grid[y][x]['obstacle'] = obs_type
+
+    def clear_dynamic_obstacles(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.grid[y][x]['obstacle'] == self.OBSTACLE_DYNAMIC:
+                    self.grid[y][x]['traversable'] = True
+                    self.grid[y][x]['obstacle'] = self.OBSTACLE_NONE
+
+    def set_terrain(self, x, y, terrain_type, slope=0.0):
+        if self._in_bounds(x, y):
+            cell = self.grid[y][x]
+            cell['terrain'] = terrain_type
+            cell['slope'] = slope
+            terrain_cost = {0: 1.0, 1: 0.8, 2: 2.5, 3: 1.2}
+            cell['cost'] = terrain_cost.get(terrain_type, 1.0) * (1 + 0.1 * slope)
+
+    def set_crop_row(self, x, y, direction=(1, 0)):
+        if self._in_bounds(x, y):
+            self.grid[y][x]['crop_row'] = True
+            self.grid[y][x]['row_dir'] = direction
+
+    def get_cost(self, x, y):
+        if not self._in_bounds(x, y) or not self.grid[y][x]['traversable']:
+            return float('inf')
+        return self.grid[y][x]['cost']
+
+    def is_passable(self, x, y):
+        return self._in_bounds(x, y) and self.grid[y][x]['traversable']
+
+    def _in_bounds(self, x, y):
+        return 0 <= x < self.width and 0 <= y < self.height
+
+    def get_grid_copy(self):
+        return copy.deepcopy(self.grid)
+
+    def create_farm_scenario(self, rows=4, row_spacing=6,
+                              obstacle_positions=None):
+        for row_idx in range(rows):
+            col = row_spacing * (row_idx + 1)
+            for y in range(self.height):
+                if self._in_bounds(col, y):
+                    self.set_crop_row(col, y, direction=(0, 1))
+
+        mid_y = self.height // 2
+        for x in range(self.width // 4, 3 * self.width // 4):
+            if self._in_bounds(x, mid_y):
+                self.set_obstacle(x, mid_y)
+        for x in range(self.width // 4 + 5, 3 * self.width // 4 - 5):
+            if self._in_bounds(x, mid_y):
+                self.grid[mid_y][x]['traversable'] = True
+                self.grid[mid_y][x]['obstacle'] = self.OBSTACLE_NONE
+
+        if obstacle_positions:
+            for (ox, oy) in obstacle_positions:
+                self.set_obstacle(ox, oy)
+
+    def print_grid(self, path=None, start=None, goal=None):
+        path_set = set(path) if path else set()
+        for y in range(self.height - 1, -1, -1):
+            row_str = ""
+            for x in range(self.width):
+                if start and (x, y) == start:
+                    row_str += "S "
+                elif goal and (x, y) == goal:
+                    row_str += "G "
+                elif (x, y) in path_set:
+                    row_str += "* "
+                elif not self.grid[y][x]['traversable']:
+                    row_str += "X "
+                elif self.grid[y][x]['crop_row']:
+                    row_str += "| "
+                else:
+                    row_str += ". "
+            print(row_str)
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+A.2. agri_astar.py – To'liq versiya
+
+import heapq
+import math
+from agri_grid import AgriGrid
+
+class Node:
+    __slots__ = ['x', 'y', 'g', 'h', 'f', 'parent']
+
+    def __init__(self, x, y, g=0.0, h=0.0, parent=None):
+        self.x = x
+        self.y = y
+        self.g = g
+        self.h = h
+        self.f = g + h
+        self.parent = parent
+
+    def __lt__(self, other):
+        return self.f < other.f
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
+
+class AgriAstar:
+    DIRECTIONS = [
+        (0, 1, 1.0), (0, -1, 1.0),
+        (1, 0, 1.0), (-1, 0, 1.0),
+        (1, 1, 1.414), (-1, 1, 1.414),
+        (1, -1, 1.414), (-1, -1, 1.414),
+    ]
+
+    def __init__(self, grid, w_row=0.3, w_turn=0.2, w_energy=0.2):
+        self.grid = grid
+        self.w_row = w_row
+        self.w_turn = w_turn
+        self.w_energy = w_energy
+
+    def heuristic(self, x, y, gx, gy, last_dir=None):
+        dx = abs(x - gx)
+        dy = abs(y - gy)
+        h_base = math.sqrt(dx**2 + dy**2)
+
+        row_bonus = 0.0
+        if self.grid._in_bounds(x, y):
+            cell = self.grid.grid[y][x]
+            if cell['crop_row'] and last_dir:
+                rd = cell['row_dir']
+                dot = last_dir[0]*rd[0] + last_dir[1]*rd[1]
+                if dot > 0.5:
+                    row_bonus = -self.w_row * 0.5
+
+        return max(h_base + row_bonus, 0.0)
+
+    def get_neighbors(self, node):
+        neighbors = []
+        for dx, dy, base_cost in self.DIRECTIONS:
+            nx, ny = node.x + dx, node.y + dy
+            if not self.grid.is_passable(nx, ny):
+                continue
+            move_cost = base_cost * self.grid.get_cost(nx, ny)
+            turn_cost = 0.0
+            if node.parent:
+                pdx = node.x - node.parent.x
+                pdy = node.y - node.parent.y
+                if (pdx, pdy) != (dx, dy):
+                    turn_cost = self.w_turn
+            neighbors.append((nx, ny, move_cost + turn_cost, (dx, dy)))
+        return neighbors
+
+    def search(self, start, goal):
+        sx, sy = start
+        gx, gy = goal
+        if not self.grid.is_passable(sx, sy) or not self.grid.is_passable(gx, gy):
+            return None, 0
+
+        start_node = Node(sx, sy, g=0.0,
+                          h=self.heuristic(sx, sy, gx, gy))
+        open_list = [start_node]
+        open_dict = {(sx, sy): start_node}
+        closed_set = set()
+        iterations = 0
+        limit = self.grid.width * self.grid.height * 4
+
+        while open_list:
+            iterations += 1
+            if iterations > limit:
+                return None, iterations
+
+            current = heapq.heappop(open_list)
+            cx, cy = current.x, current.y
+
+            if (cx, cy) in closed_set:
+                continue
+            if cx == gx and cy == gy:
+                return self._reconstruct(current), iterations
+
+            closed_set.add((cx, cy))
+
+            for nx, ny, cost, direction in self.get_neighbors(current):
+                if (nx, ny) in closed_set:
+                    continue
+                new_g = current.g + cost
+                if (nx, ny) in open_dict and new_g >= open_dict[(nx, ny)].g:
+                    continue
+                h = self.heuristic(nx, ny, gx, gy, last_dir=direction)
+                nb = Node(nx, ny, g=new_g, h=h, parent=current)
+                heapq.heappush(open_list, nb)
+                open_dict[(nx, ny)] = nb
+
+        return None, iterations
+
+    def _reconstruct(self, node):
+        path = []
+        while node:
+            path.append((node.x, node.y))
+            node = node.parent
+        return list(reversed(path))
+
+    def dynamic_replan(self, current_pos, goal, new_obstacles):
+        for (ox, oy) in new_obstacles:
+            self.grid.set_obstacle(ox, oy, AgriGrid.OBSTACLE_DYNAMIC)
+        result = self.search(current_pos, goal)
+        if result and result[0]:
+            return result[0]
+        return None
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+ILOVA B – Simulyatsiya natijalari grafiklari tavsifi
+
+B.1. Ssenariy 1 – Oddiy dala natijasi:
+     [1-rasm: 30×20 grid, ko'k chiziq – A* yo'li, yashil nuqta – boshlang'ich,
+      qizil yulduz – maqsad, qora katak – to'siq, och yashil – ekin qatori]
+
+B.2. Ssenariy 2 – Murakkab dala natijasi:
+     [2-rasm: 50×40 grid, ikki yo'l taqqoslash: qizil – standart A*,
+      ko'k – moslashtirilgan A*, jigarrang – loy maydoni]
+
+B.3. Ssenariy 3 – Dinamik muhit:
+     [3-rasm: Qayta rejalashtirish ketma-ketligi, sariq uchburchak – dinamik to'siq,
+      punktir – eski yo'l, to'liq chiziq – yangi yo'l]
+
+B.4. Samaradorlik diagrammasi:
+     [4-rasm: Ustunli diagramma – energiya, o'simlik zarari, burilishlar, vaqt
+      ko'rsatkichlarining standart va moslashtirilgan algoritmlar bo'yicha taqqosi]
+
+
+ILOVA C – Algoritm blok-sxemasi
+
+Boshlash
+  │
+  ▼
+Grid xaritasini yaratish
+  │
+  ▼
+Start va Goal nuqtalarini aniqlash
+  │
+  ▼
+Hozirgi tugunni Open Listdan tanlash (min f)
+  │
+  ├─► Tugun Goal mi? ──Ha──► Yo'lni qayta tiklash ──► Tugash (muvaffaqiyatli)
+  │
+  ▼ Yo'q
+Tugunni Closed Listga o'tkazish
+  │
+  ▼
+Qo'shni tugunlarni olish
+  │
+  ▼
+Har bir qo'shnini tekshirish:
+  - Closed Listda? ──Ha──► O'tkazib yuborish
+  - g yangi < g eski? ──Ha──► g, h, parent yangilash, Open Listga qo'shish
+  │
+  ▼
+Open List bo'shmi?
+  ├─► Ha ──► Tugash (yo'l topilmadi)
+  └─► Yo'q ──► Boshiga qaytish
+
+Dinamik to'siq aniqlansa:
+  │
+  ▼
+To'siq grid ga kiritish
+  │
+  ▼
+Lokal ta'sirlangan maydonni aniqlash
+  │
+  ▼
+Faqat ta'sirlangan tugunlarni qayta hisoblash
+  │
+  ▼
+Yangi yo'lni davom ettirish

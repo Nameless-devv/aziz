@@ -1,0 +1,32 @@
+O'ZBEKISTON RESPUBLIKASI AXBOROT TEXNOLOGIYALARI VA
+KOMMUNIKATSIYALARINI RIVOJLANTIRISH VAZIRLIGI
+
+MUHAMMAD AL-XORAZMIY NOMIDAGI
+TOSHKENT AXBOROT TEXNOLOGIYALARI UNIVERSITETI
+NUKUS FILIALI
+
+KOMPYUTER INJINIRINGI FAKULTETI
+DASTURIY INJINIRING YO'NALISHI
+
+BITIRUV MALAKAVIY ISH
+
+Mavzu: Qishloq xo'jaligi robotining harakatlanishini
+rejalashtirish (path planning) algoritmini ishlab chiqish
+
+                                    Bajardi:    4-kurs talabasi
+                                                [TALABA ISMI]
+
+                                    Ilmiy rahbar: [RAHBAR ISMI]
+                                                  [Unvon, lavozim]
+
+                                    Maslahatchi: [MASLAHATCHI ISMI]
+                                                 [Unvon, lavozim]
+
+                                    Kafedra mudiri: [KAFEDRA MUDIRI]
+                                                    [Unvon, lavozim]
+
+                                    Himoya sanasi: 2025-yil "___" ______
+                                    Bayonnoma № ___
+
+
+NUKUS – 2025

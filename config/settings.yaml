@@ -1,0 +1,137 @@
+# Qishloq xo'jaligi roboti Path Planning tizimi konfiguratsiyasi
+
+# Muhit sozlamalari
+environment:
+  # Xarita o'lchamlari (metrda)
+  width: 100.0
+  height: 100.0
+  # Grid cell o'lchami (metrda)
+  cell_size: 0.5
+  # 3D modellashtirish
+  enable_3d: false
+  height_map_resolution: 0.1
+
+# Robot parametrlari
+robot:
+  # Robot o'lchamlari (metrda)
+  width: 0.8
+  length: 1.2
+  height: 0.5
+  # Harakat modeli
+  motion_model: "differential_drive"  # differential_drive, skid_steering, ackermann
+  # Maksimal tezlik (m/s)
+  max_linear_velocity: 2.0
+  max_angular_velocity: 1.5
+  # Akselerasiya
+  max_linear_acceleration: 0.5
+  max_angular_acceleration: 1.0
+  # Xavfsizlik masofasi (metrda)
+  safety_margin: 0.3
+
+# Sensor sozlamalari
+sensors:
+  lidar:
+    enabled: true
+    range: 30.0  # metrda
+    angle_range: 360  # gradusda
+    resolution: 0.5  # gradusda
+    noise_std: 0.02
+  camera:
+    enabled: true
+    fov: 90  # gradusda
+    range: 20.0
+    resolution: [640, 480]
+  gps:
+    enabled: true
+    accuracy: 0.1  # metrda
+    update_rate: 10  # Hz
+  ultrasonic:
+    enabled: true
+    range: 5.0
+    angle: 30
+
+# Path Planning sozlamalari
+path_planning:
+  # Asosiy algoritm
+  algorithm: "a_star"  # a_star, dijkstra, rrt, rrt_star
+  # Heuristic funksiya
+  heuristic: "euclidean"  # euclidean, manhattan, diagonal
+  # 8 yo'nalishda harakat
+  allow_diagonal: true
+  # Diagonal harakat og'irligi
+  diagonal_cost: 1.414
+  # To'siq kengaytirish (robot o'lchami uchun)
+  obstacle_inflation: 0.5
+  # RRT parametrlari
+  rrt:
+    max_iterations: 5000
+    step_size: 0.5
+    goal_sample_rate: 0.1
+    
+# Motion Control sozlamalari
+motion_control:
+  # PID parametrlari
+  pid:
+    linear:
+      kp: 1.0
+      ki: 0.1
+      kd: 0.05
+    angular:
+      kp: 2.0
+      ki: 0.2
+      kd: 0.1
+  # Trajectory following
+  lookahead_distance: 1.0
+  # Yo'l smoothing
+  enable_path_smoothing: true
+  smoothing_weight: 0.5
+
+# Simulyatsiya sozlamalari
+simulation:
+  # Frame rate
+  fps: 60
+  # Real vaqt faktori
+  time_scale: 1.0
+  # Vizualizatsiya
+  visualization:
+    show_grid: true
+    show_path: true
+    show_obstacles: true
+    show_sensors: false
+    robot_color: [0, 100, 255]
+    path_color: [0, 255, 0]
+    obstacle_color: [255, 0, 0]
+    goal_color: [255, 255, 0]
+
+# Baholash sozlamalari
+evaluation:
+  # Metrikalar
+  metrics:
+    - path_length
+    - computation_time
+    - energy_consumption
+    - safety_distance
+    - smoothness
+  # Log fayli
+  log_file: "logs/evaluation.log"
+  # Natijalarni saqlash
+  save_results: true
+  results_dir: "results/"
+
+# To'siq turlari
+obstacle_types:
+  crop_row:
+    passable: false
+    color: [34, 139, 34]  # yashil
+  irrigation_channel:
+    passable: false
+    color: [0, 0, 255]  # ko'k
+  rock:
+    passable: false
+    color: [128, 128, 128]  # kulrang
+  tree:
+    passable: false
+    color: [139, 69, 19]  # jigar rang
+  temporary:
+    passable: false
+    color: [255, 165, 0]  # to'q sariq

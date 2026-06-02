@@ -1,0 +1,43 @@
+BITIRUV MALAKAVIY ISHNI BAJARISH REJASI
+
+Talaba: [TALABA TO'LIQ ISMI]
+Mavzu: Qishloq xo'jaligi robotining harakatlanishini rejalashtirish (path planning) algoritmini ishlab chiqish
+
+┌────┬────────────────────────────────────────────┬────────────────┬────────────────┬───────────┐
+│ № │ Bajarilishi lozim bo'lgan ishlar           │ Bajarish       │ Topshirish     │ Baholash  │
+│    │                                            │ muddati        │ muddati        │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 1  │ Mavzu bo'yicha adabiyotlar va internet     │ Fevral 1-15    │ Fevral 15      │           │
+│    │ manbalarini o'rganish                      │                │                │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 2  │ Kirish qismini yozish (dolzarbligi,        │ Fevral 16-28   │ Fevral 28      │           │
+│    │ maqsad va vazifalar)                       │                │                │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 3  │ I Bob: Path planning algoritmlari haqida   │ Mart 1-20      │ Mart 20        │           │
+│    │ nazariy qismni yozish                      │                │                │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 4  │ II Bob: Qishloq xo'jaligi muhiti uchun     │ Mart 21 -      │ Aprel 10       │           │
+│    │ algoritmni loyihalash                      │ Aprel 10       │                │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 5  │ III Bob: Dasturiy amalga oshirish          │ Aprel 11-30    │ Aprel 30       │           │
+│    │ (Python kod yozish)                        │                │                │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 6  │ Dasturni sinash va natijalarni tahlil      │ May 1-10       │ May 10         │           │
+│    │ qilish                                     │                │                │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 7  │ Xulosa va tavsiyalar yozish                │ May 11-15      │ May 15         │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 8  │ BMI ni to'liq rasmiylashtirib topshirish   │ May 16-20      │ May 20         │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 9  │ Taqdimot slaydlarini tayyorlash            │ May 21-25      │ May 25         │           │
+├────┼────────────────────────────────────────────┼────────────────┼────────────────┼───────────┤
+│ 10 │ Himoyaga tayyorlanish                      │ May 26-31      │ Iyun 1         │           │
+└────┴────────────────────────────────────────────┴────────────────┴────────────────┴───────────┘
+
+Ilmiy rahbar: _____________________ [RAHBAR ISMI]
+               (imzo)
+
+Talaba:       _____________________ [TALABA ISMI]
+               (imzo)
+
+Sana: "___" _________ 2025-yil

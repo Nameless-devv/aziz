@@ -1,0 +1,416 @@
+I BOB. PATH PLANNING ALGORITMLARI HAQIDA UMUMIY MA'LUMOTLAR
+
+1.1. Robotlar navigatsiyasi va path planning asoslari
+
+1.1.1. Avtonomnaya navigatsiya tushunchasi
+
+Zamonaviy robotika sohasida eng muhim va murakkab muammolardan biri – bu robotning
+mustaqil ravishda ma'lum bir muhitda harakatlanishini ta'minlashdir. Avtonomnaya navigatsiya
+deb – robota berilgan muhitda dastlabki yo'naltirmasdan mustaqil ravishda harakatlanib,
+o'z vazifalarini bajarish qobiliyatiga aytiladi [4].
+
+Avtonomnaya navigatsiya uchta asosiy masalani o'z ichiga oladi:
+  1. Lokalizatsiya (Localization) – robotning hozirgi muhitdagi o'z joylashuvini aniqlash;
+  2. Xarita tuzish (Mapping) – atrof-muhitning xaritasini yaratish va yangilash;
+  3. Yo'l rejalashtirish (Path Planning) – maqsad nuqtaga optimal yo'l topish.
+
+Bu uchta masalaning birgalikda hal etilishiga SLAM (Simultaneous Localization and Mapping)
+texnologiyasi deyiladi. SLAM texnologiyasi robotning noma'lum muhitda o'z joylashuvini
+va muhit xaritasini bir vaqtda aniqlay olish imkonini beradi [5].
+
+Avtonomnaya navigatsiya tizimlari turli sensorlardan foydalanadi:
+- Lidar (Light Detection and Ranging) – lazer to'lqinlari yordamida muhitni 3D skanerlash;
+- Kamera – vizual ma'lumotlarni qayta ishlash;
+- GPS/GNSS – global joylashuv tizimi;
+- IMU (Inertial Measurement Unit) – inersial o'lchash qurilmasi;
+- Ultratovush sensorlar – yaqin to'siqlarni aniqlash;
+- Tegizgich sensorlar – bevosita kontakt orqali to'siqlarni sezish.
+
+Qishloq xo'jaligi robotlari uchun navigatsiya tizimlari shahar yoki zavod robotlaridan
+farqli talablarga ega. Dalada GPS signali sust bo'lishi mumkin, atrof-muhit o'zgaruvchan
+bo'ladi va zaif yo'llarda harakatlanish kerak bo'ladi. Shuning uchun qishloq xo'jaligi
+robotlari ko'pincha sensor ma'lumotlarini birlashtiruvchi (sensor fusion) tizimlardan
+foydalanadi [6].
+
+Robot navigatsiyasi uchta asosiy arxitektura asosida qurilishi mumkin:
+
+1. Reaktiv arxitektura (Reactive Architecture):
+   Robot atrof-muhitni sezib, bevosita harakat qiladi. Xaritani olmaydi. Tezkor lekin
+   murakkab vazifalar uchun cheklangan.
+
+2. Deliberativ arxitektura (Deliberative Architecture):
+   Robot to'liq xaritani ishlab chiqib, rejalashtirish asosida harakat qiladi. Optimal
+   yo'lni topadi, lekin hisoblash xarajatlari katta.
+
+3. Gibrid arxitektura (Hybrid Architecture):
+   Reaktiv va deliberativ arxitekturalarni birlashtiradi. Yuqori darajada reja tuzib,
+   quyi darajada reaktiv harakat qiladi. Zamonaviy robotlar ko'pincha shu arxitekturani
+   ishlatadi.
+
+1.1.2. Path planning masalasining ta'rifi va turlari
+
+Path planning (yo'l rejalashtirish) – bu robotning boshlang'ich holatdan (start state)
+maqsad holatga (goal state) to'siqlardan xoli bo'lgan va ma'lum bir kriteriyani
+optimallashtiradigan yo'lni topish jarayonidir.
+
+Rasmiy ta'rifda path planning masalasi quyidagicha ifodalanadi [7]:
+
+  Berilgan:
+  - C (Configuration Space) – robot holatlar fazosi
+  - Cobs ⊂ C – to'siqlar bilan band bo'lgan holatlar
+  - Cfree = C \ Cobs – erkin holatlar
+  - qstart ∈ Cfree – boshlang'ich holat
+  - qgoal ∈ Cfree – maqsad holat
+
+  Topish kerak:
+  - τ: [0,1] → Cfree, bu yerda τ(0) = qstart va τ(1) = qgoal
+  - Bunday yo'l mavjud bo'lmasa, bu haqda xabar berish
+
+Path planning algoritmlari bir necha mezon bo'yicha tasniflanadi:
+
+A. Muhit xaritasiga ko'ra:
+   1. Global (to'liq ma'lumotli) path planning:
+      - Robot butun muhit xaritasiga ega
+      - Optimal yo'lni oldindan topishi mumkin
+      - Dijkstra, A*, PRM kabi algoritmlar
+
+   2. Lokal (qisman ma'lumotli) path planning:
+      - Robot faqat yaqin atrofni biladi
+      - Real vaqtda qaror qabul qiladi
+      - VFH, DWA, Bug algoritmlari
+
+B. Yo'l optimalligiga ko'ra:
+   1. Optimal algoritmlar – eng qisqa yoki eng arzon yo'lni topadi
+   2. Yaqinlashuvchi (approximate) algoritmlar – yaxshi, lekin har doim optimal emas
+
+C. Muhit dinamikasiga ko'ra:
+   1. Statik muhit uchun algoritmlar – to'siqlar o'zgarmaydi
+   2. Dinamik muhit uchun algoritmlar – harakatlanuvchi to'siqlar bilan ishlaydi
+
+D. Diskretlik/uzluksizligiga ko'ra:
+   1. Graf asosida (graph-based): Dijkstra, A*
+   2. Namuna asosida (sampling-based): RRT, PRM
+   3. Maydon asosida (field-based): Potential Field
+
+Qishloq xo'jaligi muhiti uchun odatda gibrid yondashuv qo'llaniladi: global xarita
+mavjud bo'lganda A* yoki D* kabi algoritmlardan, lokal moslashuv uchun esa reaktiv
+metodlardan foydalaniladi [8].
+
+1.1.3. Xaritani tasvirlash usullari
+
+Path planning algoritmini ishlatishdan oldin, muhitni kompyuter uchun tushunarli
+formatda tasvirlash kerak. Buning uchun bir necha usul mavjud:
+
+1. Grid (to'r) xarita tasvirida muhit teng o'lchamli katakchalar (cell) ga bo'linadi.
+   Har bir katak yo erkin (traversable) yoki to'siq (occupied) deb belgilanadi.
+
+   Afzalliklari:
+   + Amalga oshirish oson
+   + Xotira tarkibi oddiy
+   + Dijkstra va A* algoritmlari to'g'ridan-to'g'ri qo'llaniladi
+
+   Kamchiliklari:
+   - Katta maydonlar uchun xotira ko'p sarflanadi
+   - Katakcha o'lchami aniqlikka ta'sir qiladi
+   - Diagonal harakatlar muammosi
+
+   Grid xaritasida qo'shnilar odatda 4-bog'liqlik (faqat gorizontal/vertikal) yoki
+   8-bog'liqlik (diagonal ham) bo'lishi mumkin.
+
+2. To'siq grafida (Visibility Graph) muhitdagi to'siqlarning burchaklari orasida
+   bevosita ko'rish imkoni bo'lsa, ular orasida qirra tortiladi.
+
+   Afzalliklari:
+   + Geometrik aniqlik
+   + Optimal yo'l kafolatlangan (to'g'ri chiziqli yo'l)
+
+   Kamchiliklari:
+   - Robot o'lchamini hisobga olmaydi
+   - Dinamik muhitda qiyinlashadi
+
+3. Quadtree (Voronoi diagrammasi bilan birgalikda) – katta bo'sh maydonlarda yirik
+   katak, to'siqlar atrofida kichik katak ishlatiladi. Xotiradan tejamli foydalanadi.
+
+4. Probabilistik yo'l harita (PRM - Probabilistic Roadmap) – yuqori o'lchamli
+   fazolarda samarali, tasodifiy namunalar yordamida yo'l grafikasi quriladi.
+
+5. Potentsial maydon (Potential Field) – maqsad nuqta tortish, to'siqlar itarish
+   kuchi kabi tasvirlanadi. Robot eng kichik potentsial tomon harakatlanadi.
+
+Qishloq xo'jaligi robotlari uchun eng ko'p qo'llaniladigan tasvirlash usuli –
+grid xaritasidir, chunki [9]:
+- Dalaning to'rtburchak shakli grid formatiga mos keladi
+- GPS asosida yuqori aniqlikda koordinata aniqlash mumkin
+- A* algoritmi bilan samarali birlashtirish mumkin
+- Ekish qatorlari grid katakchalariga mos ravishda belgilanishi mumkin
+
+Ushbu ishda biz grid xaritasidan foydalanamiz va A* algoritmi asosida moslashtirilgan
+path planning algoritmini ishlab chiqamiz.
+
+
+1.2. Mavjud path planning algoritmlarining tahlili
+
+1.2.1. Dijkstra algoritmi
+
+Dijkstra algoritmi 1956-yilda Edsger Dijkstra tomonidan ixtiro qilingan bo'lib, grafda
+manba tugundan (source node) barcha boshqa tugunlarga eng qisqa yo'lni topadi [10].
+
+Algoritmning ishlash tartibi:
+
+1. Barcha tugunlar uchun masofa d[v] = ∞ deb belgilanadi, faqat boshlang'ich tugun
+   uchun d[start] = 0.
+2. Tashrif etilmagan tugunlar to'plami S = barcha tugunlar.
+3. Har iteratsiyada:
+   a. S dan minimal d[u] ga ega bo'lgan u tugunni tanlash
+   b. u ni S dan chiqarish (tashrif etildi deb belgilash)
+   c. u ning barcha qo'shnilari v uchun:
+      d[v] = min(d[v], d[u] + w(u,v))
+      bu yerda w(u,v) – u dan v ga qirraning og'irligi
+
+4. Maqsad tugunga yetilganda yoki S bo'sh bo'lganda algoritm tugaydi.
+
+Psevdokod:
+
+  function Dijkstra(Graph, start, goal):
+      dist[start] = 0
+      for each vertex v in Graph:
+          if v ≠ start:
+              dist[v] = ∞
+          prev[v] = undefined
+          add v to unvisited
+
+      while unvisited is not empty:
+          u = vertex in unvisited with minimum dist[u]
+          if u == goal:
+              break
+          remove u from unvisited
+
+          for each neighbor v of u:
+              alt = dist[u] + length(u, v)
+              if alt < dist[v]:
+                  dist[v] = alt
+                  prev[v] = u
+
+      return reconstruct_path(prev, start, goal)
+
+Dijkstra algoritmining murakkabligi:
+- Vaqt: O((V + E) log V) – Priority Queue ishlatilganda
+- Xotira: O(V + E)
+bu yerda V – tugunlar soni, E – qirralar soni.
+
+Dijkstra algoritmi manfiy og'irlikli qirralarda ishlamaydi, lekin barcha og'irliklar
+musbat bo'lsa har doim optimal yo'l topadi.
+
+Grid xaritasida Dijkstra algoritmi barcha yo'nalishlarda bir xil xarajat bilan
+tarqalib ketadi. Bu uning asosiy kamchiligi – maqsadga yo'naltirilmagan bo'lganligi
+sababli A* algoritmiga nisbatan sekinroq ishlaydi.
+
+1.2.2. A* (A-star) algoritmi
+
+A* algoritmi 1968-yilda Peter Hart, Nils Nilsson va Bertram Raphael tomonidan ishlab
+chiqilgan [11]. Bu algoritm Dijkstra algoritmini heuristik funksiya bilan kengaytiradi
+va path planning sohasida eng ko'p qo'llaniladigan algoritmlardan biridir.
+
+A* algoritmida har bir tugun uchun baholash funksiyasi:
+
+  f(n) = g(n) + h(n)
+
+bu yerda:
+  g(n) – boshlang'ich tugundan n tuguniga haqiqiy masofa (path cost)
+  h(n) – n tugunidan maqsadga taxminiy masofa (heuristik funksiya)
+  f(n) – umumiy taxminiy yo'l narxi
+
+Heuristik funksiya h(n) qabul qilinishi uchun u maqsadgacha haqiqiy masofani
+hech qachon oshirmasligi kerak. Bunday heuristikga "admissible" (qabul qilinadigan)
+deyiladi.
+
+Keng tarqalgan heuristik funksiyalar:
+
+1. Yevklid masofasi:
+   h(n) = √((xn - xgoal)² + (yn - ygoal)²)
+   8-bog'liqlik grid uchun mos.
+
+2. Manhattan masofasi:
+   h(n) = |xn - xgoal| + |yn - ygoal|
+   4-bog'liqlik grid uchun optimal.
+
+3. Chebyshev masofasi:
+   h(n) = max(|xn - xgoal|, |yn - ygoal|)
+   8-bog'liqlik gridda to'g'ri keladi.
+
+A* algoritmining ishlash tartibi:
+
+1. Open List (ochiq ro'yxat) – tekshirilishi kerak bo'lgan tugunlar
+2. Closed List (yopiq ro'yxat) – allaqachon tekshirilgan tugunlar
+
+  function AStar(start, goal):
+      openList = {start}
+      closedList = {}
+      g[start] = 0
+      parent[start] = null
+
+      while openList is not empty:
+          current = node in openList with minimum f(n)
+
+          if current == goal:
+              return reconstruct_path(parent, start, goal)
+
+          remove current from openList
+          add current to closedList
+
+          for each neighbor of current:
+              if neighbor in closedList:
+                  continue
+
+              tentative_g = g[current] + cost(current, neighbor)
+
+              if neighbor not in openList:
+                  add neighbor to openList
+              elif tentative_g >= g[neighbor]:
+                  continue
+
+              parent[neighbor] = current
+              g[neighbor] = tentative_g
+              f[neighbor] = g[neighbor] + h(neighbor, goal)
+
+      return failure  // yo'l topilmadi
+
+A* algoritmining xususiyatlari:
+- To'liqlik: Ha, agar yechim mavjud bo'lsa topiladi
+- Optimallik: Ha, agar heuristik admissible bo'lsa
+- Vaqt murakkabligi: O(b^d) – b eng yaxshi holda; b – shoxlanish omili, d – yo'l chuqurligi
+- Xotira murakkabligi: O(b^d) – barcha ochiq tugunlar xotirada saqlanadi
+
+A* algoritmi path planning uchun standart yondashuv bo'lib xizmat qiladi va uning
+kengaytmalar (variants) keng qo'llaniladi.
+
+1.2.3. RRT (Rapidly-exploring Random Trees) algoritmi
+
+RRT (Tez tarqaluvchi tasodifiy daraxtlar) algoritmi 1998-yilda Steven LaValle
+tomonidan taklif qilingan [12]. Bu algoritm ayniqsa yuqori o'lchamli fazolarda
+samarali ishlaydi.
+
+RRT algoritmining g'oyasi:
+
+Boshlang'ich nuqtadan boshlab, tasodifiy yo'nalishda daraxtsimo tuzilma quriladi.
+Har iteratsiyada:
+1. Erkin fazoda tasodifiy nuqta qrand tanlash
+2. Daraxtdagi eng yaqin tugunni qnear topish
+3. qnear dan qrand ga qarab qadamli harakat qilib yangi tugun qnew yaratish
+4. Yo'lda to'siq yo'q bo'lsa, qnew ni daraxtga qo'shish
+5. qnew maqsadga yaqin bo'lsa, algoritmni tugatish
+
+Psevdokod:
+
+  function RRT(qstart, qgoal, maxIter):
+      Tree.init(qstart)
+
+      for i = 1 to maxIter:
+          qrand = random_sample()
+          qnear = nearest_neighbor(Tree, qrand)
+          qnew = steer(qnear, qrand, step_size)
+
+          if collision_free(qnear, qnew):
+              Tree.add(qnew)
+              Tree.add_edge(qnear, qnew)
+
+              if distance(qnew, qgoal) < threshold:
+                  return extract_path(Tree, qstart, qnew)
+
+      return failure
+
+RRT-Connect – bu RRT ning ikki tomonlama versiyasi bo'lib, bir vaqtda ikki daraxt –
+biri boshlang'ichdan, biri maqsaddan o'sib boradi. Bu sezilarli tezlashishni ta'minlaydi.
+
+RRT* (RRT-star) – optimallik kafolatlovchi versiyasi bo'lib, daraxt tugunlarini
+qayta ulash (rewire) orqali optimallikni ta'minlaydi.
+
+RRT ning afzalliklari:
++ Yuqori o'lchamli fazolarda samarali
++ Kinematik cheklovlarni hisobga olishi mumkin
++ Murakkab muhitlarda ham yechim topadi
+
+RRT ning kamchiliklari:
+- Tasodifiy xususiyati sababli har xil natijalar berishi mumkin
+- Optimal yo'l kafolatlanmaydi (RRT* bilan bartaraf etiladi)
+- Grid muhitda A* dan sekinroq
+
+Qishloq xo'jaligi robotlari uchun RRT ayniqsa murakkab rel'efli muhitlarda (ko'proq
+erkinlik darajalari talab etilganda) qo'llaniladi [13].
+
+1.2.4. D* (Dynamic A*) algoritmi
+
+D* (Dynamic A-star) algoritmi 1994-yilda Anthony Stentz tomonidan taklif qilingan [14].
+Bu algoritm dinamik muhitlarda, ya'ni to'siqlar harakat qilayotganda yoki ma'lumot
+yangilanganda samarali ishlaydi.
+
+D* algoritmining asosiy xususiyati – to'liq qayta hisoblashni talab etmaslik.
+Muhit o'zgarganda faqat ta'sirlangan qismlar qayta hisoblanadi.
+
+D* Lite – D* ning soddalashtirish versiyasi bo'lib, xotiradan tejamli foydalanadi
+va amaliy tatbiqlarda ko'p ishlatiladi:
+
+  Asosiy tushuncha:
+  - rhs(n) – maqsaddan n tuguniga eng yaxshi taxminiy yo'l narxi
+  - g(n) – joriy baholangan yo'l narxi
+  - Agar g(n) = rhs(n), tugun "consistent" (izchil)
+  - Agar g(n) > rhs(n), tugun "overconsistent"
+  - Agar g(n) < rhs(n), tugun "underconsistent"
+
+D* Lite algoritmi faqat izchil bo'lmagan tugunlarni qayta hisoblaydi, bu esa
+katta tezlanishni ta'minlaydi.
+
+D* ning qo'llanilish sohalari:
+- Mars rover navigatsiyasi (NASA tomonidan ishlatilgan)
+- Harakatlanuvchi to'siqlar bilan ombor robotlari
+- Qishloq xo'jaligida real vaqt navigatsiyasi
+
+1.2.5. Algoritmlarni taqqoslash
+
+Quyidagi jadvalda asosiy path planning algoritmlari taqqoslanadi:
+
+┌─────────────────┬───────────┬───────────┬───────────────┬──────────────┬──────────────────┐
+│ Mezon           │ Dijkstra  │ A*        │ RRT           │ D*           │ RRT*             │
+├─────────────────┼───────────┼───────────┼───────────────┼──────────────┼──────────────────┤
+│ Optimallik      │ Ha        │ Ha*       │ Yo'q          │ Ha*          │ Ha (asimptotik)  │
+├─────────────────┼───────────┼───────────┼───────────────┼──────────────┼──────────────────┤
+│ To'liqlik       │ Ha        │ Ha        │ Ha (probabil) │ Ha*          │ Ha (probabil)    │
+├─────────────────┼───────────┼───────────┼───────────────┼──────────────┼──────────────────┤
+│ Dinamik muhit   │ Yo'q      │ Yomon     │ Qisman        │ Yaxshi       │ Qisman           │
+├─────────────────┼───────────┼───────────┼───────────────┼──────────────┼──────────────────┤
+│ Yuqori o'lcham  │ Yomon     │ Yomon     │ Yaxshi        │ O'rtacha     │ Yaxshi           │
+├─────────────────┼───────────┼───────────┼───────────────┼──────────────┼──────────────────┤
+│ Tezlik          │ O'rtacha  │ Tez       │ Tez (random)  │ Tez (update) │ Sekin            │
+├─────────────────┼───────────┼───────────┼───────────────┼──────────────┼──────────────────┤
+│ Heuristik       │ Yo'q      │ Ha        │ Yo'q          │ Ha           │ Yo'q             │
+├─────────────────┼───────────┼───────────┼───────────────┼──────────────┼──────────────────┤
+│ Grid da ishlash │ Yaxshi    │ Yaxshi    │ Yaxshi        │ Yaxshi       │ Yaxshi           │
+├─────────────────┼───────────┼───────────┼───────────────┼──────────────┼──────────────────┤
+│ Xotira sarfi    │ Ko'p      │ O'rtacha  │ O'rtacha      │ O'rtacha     │ Ko'p             │
+└─────────────────┴───────────┴───────────┴───────────────┴──────────────┴──────────────────┘
+* – admissible heuristik ishlatilganda
+
+Taqqoslash asosida quyidagi xulosaga kelamiz:
+
+Qishloq xo'jaligi robotlari uchun A* algoritmi eng mos algoritm hisoblanadi, chunki:
+1. Grid xaritasida samarali ishlaydi
+2. Optimal yo'l topadi
+3. Qishloq maydonlari uchun moslashtirilgan heuristik funksiya yaratish mumkin
+4. Amalga oshirish nisbatan oson va samarali
+5. Kengaytirilib dinamik muhitga moslashtirilishi mumkin
+
+Biroq an'anaviy A* algoritmi qishloq xo'jaligi muhitining barcha xususiyatlarini
+hisobga olmaydi. Shu sababdan keyingi bobda qishloq xo'jaligi muhiti uchun
+moslashtirilgan A* algoritmi ishlab chiqiladi.
+
+I Bob bo'yicha xulosa
+
+Birinchi bobda path planning algoritmlarining nazariy asoslari o'rganildi. Avtonomnaya
+navigatsiya tushunchasi va uning tarkibiy qismlari bayon etildi. Path planning masalasi
+rasmiy ta'riflanib, turli tasnif mezonlari bo'yicha algoritmlar guruhlarga ajratildi.
+Xaritani tasvirlash usullari, xususan grid xaritasi tahlil qilindi.
+
+Asosiy path planning algoritmlari – Dijkstra, A*, RRT va D* – batafsil o'rganildi va
+taqqoslandi. Tahlil natijasida A* algoritmi qishloq xo'jaligi robotlari uchun eng
+qulay asos sifatida aniqlandi. Keyingi bobda qishloq xo'jaligi muhitining o'ziga xos
+xususiyatlarini hisobga olgan holda moslashtirilgan A* algoritmi ishlab chiqiladi.

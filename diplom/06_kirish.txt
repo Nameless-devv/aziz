@@ -1,0 +1,117 @@
+KIRISH
+
+Mavzuning dolzarbligi
+
+Jahon aholisining tobora ko'payib borishi va oziq-ovqat mahsulotlariga bo'lgan talab
+ortishi natijasida qishloq xo'jaligini modernizatsiya qilish zaruriyati vujudga kelmoqda.
+Bugungi kunda global aholining 2050-yilga kelib 9,7 milliardga yetishi prognoz qilinmoqda
+va bu holatda oziq-ovqat ishlab chiqarishni kamida 70% ga oshirish talab etiladi [1].
+Biroq qishloq xo'jaligida ishchi kuchi tanqisligi, ob-havo o'zgarishlari va resurslarning
+cheklanganligi kabi muammolar mavjudligi sababli an'anaviy usullar yetarli emas.
+
+Shu sababdan zamonaviy texnologiyalarni, xususan, robotlashtirilgan tizimlarni qishloq
+xo'jaligiga tatbiq etish dunyo bo'ylab keng tarqalmoqda. Qishloq xo'jaligi robotlari
+(Agricultural Robots yoki AgRobots) ekinlarni parvarish qilish, o'g'it sepish, hosilni
+yig'ish, zarar ko'rgan o'simliklarni aniqlash va boshqa vazifalarni mustaqil ravishda
+bajarishi mumkin [2]. Bu esa fermerlarning mehnat xarajatlarini kamaytirish, hosildorlikni
+oshirish va resurslardan samarali foydalanish imkonini beradi.
+
+Ammo qishloq xo'jaligi robotlarini samarali qilishning asosiy shartlaridan biri – bu ularni
+yo'l rejalashtirish (path planning) texnologiyasi bilan jihozlashdir. Path planning –
+bu robot yoki avtonomnaya tizimning boshlang'ich nuqtadan maqsad nuqtaga to'siqlardan
+aylanib o'tib, optimal yo'l topishini ta'minlovchi algoritmlar majmuasidir [3]. Qishloq
+xo'jaligi muhiti esa shahar muhitidan farqli o'laroq, o'zgaruvchan rel'ef, notekis tuproq,
+turli o'simlik qatlamlari va dinamik to'siqlar (hayvonlar, ishchi texnika va boshqalar)
+kabi murakkabliklarni o'z ichiga oladi.
+
+O'zbekiston sharoitida ham qishloq xo'jaligini raqamlashtirish va robotlashtirishga e'tibor
+kuchaymoqda. "Raqamli O'zbekiston – 2030" strategiyasi doirasida agrotexnologiyalar
+rivojlantirish davlat dasturlaridan biri hisoblanadi. Mamlakatimizdagi paxta, sabzavot va
+mevali bog'lar uchun avtonomnaya robotlarni joriy etish nafaqat samaradorlikni oshiradi,
+balki atrof-muhitga zarar keltirmagan holda qishloq xo'jaligi intensivligini ta'minlaydi.
+
+Mavjud path planning algoritmlari (A*, Dijkstra, RRT va boshqalar) asosan shahar muhiti
+yoki tartibli zavodlar uchun ishlab chiqilgan bo'lib, qishloq xo'jaligi muhitining
+xususiyatlarini to'liq hisobga olmaydi. Shu sababdan qishloq xo'jaligi robotlari uchun
+moslashtirilgan, samarali va ishonchli path planning algoritmini ishlab chiqish bugungi
+kunda dolzarb ilmiy-texnik muammo hisoblanadi.
+
+Tadqiqotning maqsadi va vazifalari
+
+Ushbu bitiruv malakaviy ishining asosiy maqsadi – qishloq xo'jaligi robotining
+harakatlanishini rejalashtirish (path planning) algoritmini ishlab chiqish va uni
+dasturiy ta'minot sifatida amalga oshirishdir.
+
+Belgilangan maqsadga erishish uchun quyidagi vazifalar hal qilinishi zarur:
+
+1. Robotlar navigatsiyasi va path planning sohasidagi ilmiy adabiyotlarni o'rganish va
+   tahlil qilish;
+
+2. Mavjud path planning algoritmlarini (Dijkstra, A*, RRT, D*) o'rganish, ularning
+   afzalliklari va kamchiliklarini aniqlash;
+
+3. Qishloq xo'jaligi muhitining o'ziga xos xususiyatlarini o'rganish va robot navigatsiyasiga
+   ta'sir etuvchi omillarni aniqlash;
+
+4. Qishloq xo'jaligi muhiti uchun moslashtirilgan A* algoritmini ishlab chiqish;
+
+5. Algoritmni Python dasturlash tilida amalga oshirish va dasturiy ta'minot yaratish;
+
+6. Ishlab chiqilgan algoritmni simulyatsiya muhitida sinash va samaradorligini baholash.
+
+Tadqiqotning ob'ekti va predmeti
+
+Tadqiqotning ob'ekti – qishloq xo'jaligi robotlarining harakatlanishini boshqarish
+tizimlari.
+
+Tadqiqotning predmeti – qishloq xo'jaligi muhitida robot uchun optimal yo'l rejalashtirish
+(path planning) algoritmlari.
+
+Tadqiqotning metodologik asosi
+
+Bitiruv malakaviy ish yozishda quyidagi ilmiy metodlardan foydalanilgan:
+
+- Tahlil va sintez metodi – mavjud path planning algoritmlarini tahlil qilishda;
+- Taqqoslash metodi – turli algoritmlarning samaradorligini baholashda;
+- Modellashtirish metodi – qishloq xo'jaligi muhitini simulyatsiya qilishda;
+- Eksperiment metodi – ishlab chiqilgan algoritmni sinash va natijalarini olishda;
+- Statistik tahlil metodi – natijalarni raqamli tahlil qilishda.
+
+Ishning ilmiy yangiligi
+
+1. Qishloq xo'jaligi muhitining o'ziga xos xususiyatlarini (notekis rel'ef, dinamik
+   to'siqlar, qator ekish sxemalari) hisobga oluvchi moslashtirilgan A* algoritmi
+   ishlab chiqildi.
+
+2. Qishloq xo'jaligi maydoni uchun optimallashtirilgan heuristik funksiya taklif qilindi.
+
+3. Dinamik to'siqlarga real vaqtda moslashishi mumkin bo'lgan path re-planning mexanizmi
+   ishlab chiqildi.
+
+Olinadigan natijalar
+
+Ushbu ish natijasida quyidagilar olinadi:
+
+1. Qishloq xo'jaligi robotlari uchun moslashtirilgan path planning algoritmi;
+2. Python tilida yozilgan to'liq dasturiy ta'minot;
+3. Algoritmni taqqoslash va baholash natijalari;
+4. Qishloq xo'jaligi robotlarini joriy etishga doir amaliy tavsiyalar.
+
+Ishning tuzilishi
+
+Bitiruv malakaviy ish kirish, uch bob, xulosa, foydalanilgan adabiyotlar ro'yxati va
+ilovalardan iborat.
+
+Kirish qismida mavzuning dolzarbligi asoslanadi, tadqiqotning maqsad va vazifalari
+belgilanadi, metodologik asosi hamda ilmiy yangiligi bayon etiladi.
+
+Birinchi bobda path planning algoritmlarining nazariy asoslari, mavjud algoritmlar va
+ularni taqqoslash natijalari keltiriladi.
+
+Ikkinchi bobda qishloq xo'jaligi muhitining xususiyatlari, robot uchun qo'yiladigan talablar
+va moslashtirilgan A* algoritmini ishlab chiqish jarayoni bayon etiladi.
+
+Uchinchi bobda algoritmning dasturiy amalga oshirilishi, sinov natijalari va tahlili
+keltiriladi.
+
+Xulosa qismida ish natijalari umumlashtiriladi va kelajak uchun tavsiyalar beriladi.

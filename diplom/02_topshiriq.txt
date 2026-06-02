@@ -1,0 +1,69 @@
+O'ZBEKISTON RESPUBLIKASI AXBOROT TEXNOLOGIYALARI VA
+KOMMUNIKATSIYALARINI RIVOJLANTIRISH VAZIRLIGI
+
+MUHAMMAD AL-XORAZMIY NOMIDAGI
+TOSHKENT AXBOROT TEXNOLOGIYALARI UNIVERSITETI NUKUS FILIALI
+
+KOMPYUTER INJINIRINGI FAKULTETI
+DASTURIY INJINIRING YO'NALISHI
+
+BITIRUV MALAKAVIY ISHNI BAJARISH UCHUN
+
+T O P S H I R I Q
+
+Talaba: [TALABA TO'LIQ ISMI]
+
+Bitiruv malakaviy ish mavzusi: "Qishloq xo'jaligi robotining harakatlanishini
+rejalashtirish (path planning) algoritmini ishlab chiqish"
+
+Kafedra majlisi qaroriga asosan tasdiqlangan:
+"___" _________ 2025-yil, Bayonnoma № ___
+
+Ilmiy rahbar: [RAHBAR ISMI, unvon, lavozim]
+
+Bitiruv malakaviy ishni topshirish muddati: 2025-yil "___" ________
+
+TOPSHIRIQ MAZMUNI:
+
+1. BMI mavzusining dolzarbligi va amaliy ahamiyatini asoslash
+2. Qishloq xo'jaligida robotlash sohasidagi zamonaviy tadqiqotlarni tahlil qilish
+3. Path planning (yo'l rejalashtirisht) algoritmlarini o'rganish va taqqoslash
+4. Qishloq xo'jaligi muhiti uchun moslashtirilgan path planning algoritmini ishlab chiqish
+5. Algoritmni Python dasturlash tilida amalga oshirish
+6. Algoritmning samaradorligini simulyatsiya yordamida tekshirish va natijalarni tahlil qilish
+
+DASTLABKI MA'LUMOTLAR:
+- Qishloq xo'jaligi robotlari haqida ilmiy maqolalar va adabiyotlar
+- Path planning algoritmlari (A*, Dijkstra, RRT, D*) haqida nazariy asoslar
+- Python 3.x dasturlash tili va tegishli kutubxonalar (NumPy, Matplotlib, Pygame)
+- Grid-based va graph-based xarita tasviri usullari
+
+GRAFIK MATERIALLAR RO'YXATI:
+1. Qishloq xo'jaligi roboti harakatlanish muhitining sxemasi
+2. A* algoritmi ishlash jarayonining blok-sxemasi
+3. Grid xaritasida yo'l rejalashtirish natijalarining grafik tasviri
+4. Algoritmlar taqqoslash natijalari diagrammasi
+5. Dastur arxitekturasining UML diagrammasi
+
+BMI TARKIBIY BO'LIMLARI:
+
+Kirish
+I Bob: Path planning algoritmlari haqida umumiy ma'lumotlar
+   1.1. Robotlar navigatsiyasi va path planning asoslari
+   1.2. Mavjud path planning algoritmlarining tahlili
+II Bob: Qishloq xo'jaligi roboti uchun path planning algoritmi
+   2.1. Qishloq xo'jaligi muhitida robotlar harakatlanishining xususiyatlari
+   2.2. Moslashtirilgan A* algoritmini ishlab chiqish
+III Bob: Algoritmni dasturiy amalga oshirish va tahlili
+   3.1. Dasturiy ta'minot ishlab chiqish
+   3.2. Natijalarni tekshirish va tahlil
+Xulosa
+Foydalanilgan adabiyotlar ro'yxati
+
+Ilmiy rahbar: _____________________ [RAHBAR ISMI]
+               (imzo)
+
+Talaba:       _____________________ [TALABA ISMI]
+               (imzo)
+
+Topshiriq berilgan sana: "___" _________ 2025-yil

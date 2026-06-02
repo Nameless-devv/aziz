@@ -1,0 +1,46 @@
+MUNDARIJA
+
+Annotatsiya ..................................................................................  4
+Kirish ......................................................................................  7
+
+I BOB. PATH PLANNING ALGORITMLARI HAQIDA UMUMIY MA'LUMOTLAR ................................  11
+   1.1. Robotlar navigatsiyasi va path planning asoslari .....................................  11
+      1.1.1. Avtonomnaya navigatsiya tushunchasi .............................................  11
+      1.1.2. Path planning masalasining ta'rifi va turlari ...................................  14
+      1.1.3. Xaritani tasvirlash usullari ....................................................  17
+   1.2. Mavjud path planning algoritmlarining tahlili ........................................  22
+      1.2.1. Dijkstra algoritmi ..............................................................  22
+      1.2.2. A* (A-star) algoritmi ...........................................................  25
+      1.2.3. RRT (Rapidly-exploring Random Trees) algoritmi ..................................  29
+      1.2.4. D* (Dynamic A*) algoritmi ......................................................  33
+      1.2.5. Algoritmlarni taqqoslash ........................................................  36
+   I Bob bo'yicha xulosa ....................................................................  38
+
+II BOB. QISHLOQ XO'JALIGI ROBOTI UCHUN PATH PLANNING ALGORITMI .............................  40
+   2.1. Qishloq xo'jaligi muhitida robotlar harakatlanishining xususiyatlari ..................  40
+      2.1.1. Qishloq xo'jaligi muhitining o'ziga xos xususiyatlari ...........................  40
+      2.1.2. Qishloq xo'jaligi robotlariga qo'yiladigan talablar .............................  44
+      2.1.3. To'siqlar va dinamik muhit muammolari ...........................................  47
+   2.2. Moslashtirilgan A* algoritmini ishlab chiqish ........................................  50
+      2.2.1. Asosiy algoritm tuzilmasi va matematik asosi ....................................  50
+      2.2.2. Heuristik funksiya tanlash va moslashtirishlar ...................................  54
+      2.2.3. Dinamik to'siqlarga moslashuv mexanizmi .........................................  57
+      2.2.4. Qishloq maydoni uchun grid xaritasini yaratish ..................................  60
+   II Bob bo'yicha xulosa ...................................................................  64
+
+III BOB. ALGORITMNI DASTURIY AMALGA OSHIRISH VA TAHLILI ....................................  66
+   3.1. Dasturiy ta'minot ishlab chiqish ....................................................  66
+      3.1.1. Ishlab chiqish muhiti va vositalarni tanlash ....................................  66
+      3.1.2. Dastur arxitekturasi ............................................................  69
+      3.1.3. Asosiy modullar va ularning tavsifi .............................................  72
+      3.1.4. Python dastur kodi va izohlari ..................................................  75
+   3.2. Natijalarni tekshirish va tahlil ....................................................  81
+      3.2.1. Simulyatsiya muhitini sozlash ...................................................  81
+      3.2.2. Sinov natijalari va tahlili .....................................................  84
+      3.2.3. Algoritmning samaradorlik ko'rsatkichlari ........................................  87
+
+   III Bob bo'yicha xulosa .................................................................  90
+
+Xulosa .....................................................................................  92
+Foydalanilgan adabiyotlar ...................................................................  95
+Ilovalar ....................................................................................  98
