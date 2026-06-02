@@ -50,22 +50,70 @@ Bu tizim qishloq xo'jaligi robotlari uchun **interaktiv dala va to'siq rejalasht
 - Dala qoplamaning 100% ta'minlashi
 - Overlap parametri bilan ajustable
 
-## O'rnatish
+## 🚀 Tezkor O'rnatish
 
+### macOS / Linux:
 ```bash
-# Virtual muhit yaratish (agar yo'q bo'lsa)
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Kutubxonalarni o'rnatish
-pip install -r requirements.txt
+git clone https://github.com/Nameless-devv/aziz.git
+cd aziz
+bash install.sh
+aziz
 ```
 
-## Ishga tushirish
+### Windows:
+
+**Option 1: Git Bash (Tavsiya etiladi)**
+```bash
+git clone https://github.com/Nameless-devv/aziz.git
+cd aziz
+bash install.bat
+aziz
+```
+
+**Option 2: PowerShell (Administrator sifatida)**
+```powershell
+git clone https://github.com/Nameless-devv/aziz.git
+cd aziz
+.\install.ps1
+aziz
+```
+
+**Option 3: CMD (Administrator sifatida)**
+```cmd
+git clone https://github.com/Nameless-devv/aziz.git
+cd aziz
+install.bat
+aziz
+```
+
+⚠️ **MUHIM:** Python va Git o'rnatilganligi tekshirig: https://www.python.org va https://git-scm.com
+
+## Manual O'rnatish
 
 ```bash
-# Interaktiv planner ishga tushirish
-python interactive_planner.py
+# Virtual environment yaratish
+python3 -m venv venv
+
+# Faollashtirish (macOS/Linux):
+source venv/bin/activate
+# Yoki Windows:
+# venv\Scripts\activate
+
+# Kutubxonalarni o'rnatish
+pip install -e .
+
+# Dasturni ishga tushirish
+aziz
+```
+
+## Boshqa Kompyuterga O'tkazish
+
+```bash
+git clone https://github.com/Nameless-devv/aziz.git
+cd aziz
+bash install.sh    # macOS/Linux
+# Yoki Windows-da: install.bat yoki install.ps1
+aziz
 ```
 
 ## Foydalanish
